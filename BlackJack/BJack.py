@@ -1,4 +1,6 @@
 ﻿from cardPack import Deck
+from helper import hand_index_check, money_check
+
 
 class BlackJack:
     """
@@ -60,20 +62,34 @@ class BlackJack:
         """
         player = self.players[player_id]
 
-        if bet_amount > player.saldo:
-            print("Insufficient funds for this bet.")
+        if not money_check(bet_amount, player):
             return
 
-        if hand_index < 0 or hand_index >= len(player.hands):
-            print(f"Invalid hand index. Player {player.name} has {len(player.hands)} hands.")
+        if not hand_index_check(hand_index, player):
             return
 
         player.add_money(-bet_amount)
         player.hands[hand_index].bet = bet_amount
-        print(f"{player.name} placed a bet of {bet_amount} on their first hand.")
+        print(f"{player.name} placed a bet of {bet_amount}.")
 
     def double(self, player_id, hand_index=0):
-        pass
+        """
+        Doubles players bet and draws card automatically.
+
+        :param hand_index: index of a hand
+        :param player_id: ID of the player
+        """
+        player = self.players[player_id]
+
+        if not money_check(player.hands[hand_index].bet, player):
+            return
+
+        if not hand_index_check(hand_index, player):
+            return
+
+        player.add_money(-player.hands[hand_index].bet)
+        player.hands[hand_index].bet *= 2
+        player.draw_card(self.deck, 1, hand_index)
 
     def split(self, player_id, hand_index=0):
         pass
