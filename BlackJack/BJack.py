@@ -1,5 +1,5 @@
 ﻿from cardPack import Deck
-from helper import hand_index_check, money_check
+from helper import hand_index_check, money_check, split_check
 
 
 class BlackJack:
@@ -52,6 +52,7 @@ class BlackJack:
                 player.draw_card(self.deck, 2, hand_index=player.hands.index(hand))
                 print(f"{player.name}'s Hand: {hand.cards} (Total: {hand.get_total()})")
 
+
     def add_pot(self, player_id, bet_amount, hand_index =0):
         """
         Adds a player's bet for their initial hand.
@@ -92,13 +93,38 @@ class BlackJack:
         player.draw_card(self.deck, 1, hand_index)
 
     def split(self, player_id, hand_index=0):
-        pass
+        player = self.players[player_id]
+
+        if split_check(player, hand_index):
+            pass
+
+        if not money_check(player.hands[hand_index].bet, player):
+            return
+
+        if not hand_index_check(hand_index, player):
+            return
+
+        player.add_money(-player.hands[hand_index].bet)
+
+        new_hand = player.add_hand(player.hands[hand_index].bet)
+
+        move_card = player.hands[hand_index].cards.pop(1)
+        player.hands[new_hand].add_card(move_card)
+
+        player.draw_card(self.deck, 1, hand_index)
+        player.draw_card(self.deck, 1, move_card)
 
     def hit(self, player_id, hand_index=0):
-        pass
+        player = self.players[player_id]
+        player.draw_card(self.deck, 1, hand_index)
+        if player.hands.is_busted:
+            player.hands.busted = True
 
     def stay(self, player_id, hand_index=0):
-        pass
+        player = self.players[player_id]
+
+        if player.hands.is_busted:
+            player.hands.busted = True
 
     def sum_of_hands(self, player_id):
         """

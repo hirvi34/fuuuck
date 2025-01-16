@@ -18,7 +18,20 @@
         if self.get_total() > 21:
             self.busted = True
 
+    def get_value(self, card_index):
+        value = self.cards[card_index].value
 
+        if value.isdigit():  # Numeric cards (2-10)
+            return int(value)
+        elif value == "A":  # Aces
+            return 11
+        else:  # Face cards (J, Q, K)
+            return 10
+
+
+
+    def get_cards(self):
+        return self.cards
 
     def get_total(self):
         """
@@ -50,6 +63,8 @@
 
         :return: True if busted, False otherwise
         """
+        if self.get_total() > 21:
+            self.busted = True
         return self.busted
 
     def reset(self):

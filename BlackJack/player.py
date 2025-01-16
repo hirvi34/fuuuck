@@ -60,7 +60,7 @@ class Player:
         """
         # Clear all hands except the first one
         while len(self.hands) > 1:
-            self.delete_hand(-1)  # Always delete the last hand for simplicity
+            self.hands.pop(len(self.hands)-1)  # Always delete the last hand for simplicity
 
         # Reset the first hand
         self.hands[0].reset()
